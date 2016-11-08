@@ -7,8 +7,21 @@ class Product < ApplicationRecord
 
   before_validation :set_vat_rate, on: :create
 
+  def price(pos=1)
+    unless self.discount.blank?
+      if pos%self.discount[:count] == 0
+        return self[:price] + self.discount[:value]
+      end
+    end
+    return self[:price]
+  end
+
   def vat_price
     self.price * (VAT_RATES[self.vat_rate])
+  end
+
+  def discount
+    JSON.parse(self[:discount] || "{}").symbolize_keys
   end
 
   private

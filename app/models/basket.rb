@@ -1,19 +1,21 @@
 class Basket < ApplicationRecord
 
-  def products
-    _products = []
-    _items = (self.items || "").split(",")
-    _items.each do |item|
-      p = Product.find_by_id(item)
-      products.push(p) unless p.blank?
-    end
-    return _products
+  def contents
+    JSON.parse(self.items || "[]").map{|i| i.symbolize_keys }
   end
 
   def scan(product)
-    _items = (self.items || "").split(",")
-    _items.push(product.code)
-    self.items = _items.join(",")
+    _items = self.contents
+
+    new_item = {
+      code: product.code,
+      name: product.name,
+      price: product.price,
+      vat_rate: VAT_RATES[product.vat_rate]
+    }
+
+    _items.push(new_item)
+    self.items = _items.to_json
   end
 
   def scan!(product)
@@ -22,20 +24,14 @@ class Basket < ApplicationRecord
   end
 
   def subtotal
-    self.products.map(&:price).inject(:+)
+    self.contents.map{|i| i[:price].to_d }.inject(:+)
   end
   
   def vat_total
-    self.products.map(&:vat_price).inject(:+)
+    self.contents.map{|i| i[:price].to_d * i[:vat_rate] }.inject(:+)
   end
 
   def grand_total
-    _gt = self.subtotal + self.vat_total
-
-    if _gt > 70
-      _gt = _gt * 0.88
-    end
-
-    return_gt
+    self.subtotal + self.vat_total
   end
 end
