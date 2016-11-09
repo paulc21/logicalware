@@ -25,6 +25,7 @@ class CheckoutController < ApplicationController
 
   # GET /checkout/clear
   def clear
+    @basket.destroy
     session[:basket_id] = nil
     redirect_to checkout_path and return
   end
