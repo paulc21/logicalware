@@ -33,7 +33,15 @@ class Basket < ApplicationRecord
     self.contents.map{|i| i[:price].to_d * i[:vat_rate] }.inject(:+)
   end
 
-  def grand_total
-    self.subtotal + self.vat_total
+  def discount(limit=70,discount=0.12)
+    if (self.subtotal + self.vat_total) >= limit
+      return (self.subtotal + self.vat_total) * discount
+    else
+      return 0
+    end
+  end
+
+  def total
+    self.subtotal + self.vat_total - self.discount
   end
 end

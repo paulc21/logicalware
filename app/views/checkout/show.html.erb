@@ -1,7 +1,7 @@
 <h1>Basket</h1>
 
 <% flash.each do |k,m| %>
-  <p><strong><%= k %></strong> -- <%= m %></p>
+  <p><strong><%= k.humanize %></strong> -- <%= m %></p>
 <% end %>
 
 <%= form_tag scan_path do %>
@@ -28,16 +28,20 @@
         </tr>
       <% end %>
       <tr>
-        <td>Subtotal</td>
+        <td><strong>Subtotal</strong></td>
         <td><%= number_to_currency(@basket.subtotal,{ unit: "£" }) %></td>
       </tr>
       <tr>
-        <td>VAT total</td>
+        <td><strong>VAT total</strong></td>
         <td><%= number_to_currency(@basket.vat_total,{ unit: "£" }) %></td>
       </tr>
       <tr>
-        <td>Grand Total</td>
-        <td><%= number_to_currency(@basket.grand_total,{ unit: "£" }) %></td>
+        <td><strong>Discount</strong></td>
+        <td>-<%= number_to_currency(@basket.discount,{ unit:"£" }) %></td>
+      </tr>
+      <tr>
+        <td><strong>Grand Total</strong></td>
+        <td><%= number_to_currency(@basket.total,{ unit: "£" }) %></td>
       </tr>
     <% else %>
       <tr>

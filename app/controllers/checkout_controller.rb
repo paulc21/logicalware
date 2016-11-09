@@ -7,13 +7,19 @@ class CheckoutController < ApplicationController
 
   # GET|POST /checkout/scan/:product_code
   def scan
-    product = Product.find_by_code(params[:product_code])
-    unless product.blank?
-      @basket.scan!(product)
-      session[:basket_id] = @basket.id
-    else
-      flash[:error] = "Item not found"
+    missing_products = []
+    params[:product_code].split(",").map(&:strip).each do |code|
+      product = Product.find_by_code(code)
+      unless product.blank?
+        @basket.scan(product)
+      else
+        missing_products.push(code)
+      end
     end
+
+    flash[:error] = "One or more products could not be found: #{missing_products.join(", ")}"
+    
+    session[:basket_id] = @basket.id if @basket.save
     redirect_to checkout_path and return
   end
 
