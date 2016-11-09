@@ -17,7 +17,7 @@ class CheckoutController < ApplicationController
       end
     end
 
-    flash[:error] = "One or more products could not be found: #{missing_products.join(", ")}"
+    flash[:error] = "One or more products could not be found: #{missing_products.join(", ")}"if missing_products.any?
     
     session[:basket_id] = @basket.id if @basket.save
     redirect_to checkout_path and return
