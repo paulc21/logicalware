@@ -23,6 +23,12 @@ class CheckoutController < ApplicationController
     redirect_to checkout_path and return
   end
 
+  # GET /checkout/clear
+  def clear
+    session[:basket_id] = nil
+    redirect_to checkout_path and return
+  end
+
   private
   def fetch_basket
     @basket = Basket.find_by_id(session[:basket_id]) || Basket.new

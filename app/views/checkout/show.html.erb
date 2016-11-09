@@ -5,18 +5,17 @@
 <% end %>
 
 <%= form_tag scan_path do %>
-  <label>Product code</label>
-  <%= text_field_tag :product_code %>
-  <%= submit_tag "Add to basket" %>
+  <%= select_tag :product_code, options_for_select(Product.order(name: :asc).map{|p| ["#{p.code} -- #{p.name}",p.code] }), { prompt: "Select product" } %>
+  <%= submit_tag "Scan" %>
 <% end %>
 
 <h2>Contents</h2>
 
-<table>
+<table class="table striped">
   <thead>
     <tr>
       <th>Product</th>
-      <th>Price</th>
+      <th class="text-right" style="width:120px;">Price</th>
     </tr>
   </thead>
   <tbody>
@@ -24,24 +23,24 @@
       <% @basket.contents.each do |item| %>
         <tr>
           <td><%= item[:name] %></td>
-          <td><%= number_to_currency(item[:price],{ unit: "£" }) %></td>
+          <td class="currency"><%= number_to_currency(item[:price],{ unit: "£" }) %></td>
         </tr>
       <% end %>
-      <tr>
+      <tr class="border">
         <td><strong>Subtotal</strong></td>
-        <td><%= number_to_currency(@basket.subtotal,{ unit: "£" }) %></td>
+        <td class="currency"><%= number_to_currency(@basket.subtotal,{ unit: "£" }) %></td>
       </tr>
       <tr>
         <td><strong>VAT total</strong></td>
-        <td><%= number_to_currency(@basket.vat_total,{ unit: "£" }) %></td>
+        <td class="currency"><%= number_to_currency(@basket.vat_total,{ unit: "£" }) %></td>
       </tr>
       <tr>
         <td><strong>Discount</strong></td>
-        <td>-<%= number_to_currency(@basket.discount,{ unit:"£" }) %></td>
+        <td class="currency">-<%= number_to_currency(@basket.discount,{ unit:"£" }) %></td>
       </tr>
-      <tr>
+      <tr class="border">
         <td><strong>Grand Total</strong></td>
-        <td><%= number_to_currency(@basket.total,{ unit: "£" }) %></td>
+        <td class="currency"><%= number_to_currency(@basket.total,{ unit: "£" }) %></td>
       </tr>
     <% else %>
       <tr>
@@ -50,3 +49,5 @@
     <% end %>
   </tbody>
 </table>
+
+<% if @basket.contents.any? %><p><%= link_to "Clear basket", clear_path %></p><% end %>

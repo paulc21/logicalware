@@ -13,3 +13,34 @@
  *= require_tree .
  *= require_self
  */
+
+table.table{
+  width: 50%;
+  border-collapse: collapse;
+  border: 1px solid #999;
+}
+th,td{
+  padding: 3px;
+}
+th{
+  text-align:left;
+  background:#DDD;
+  border-bottom: 1px solid #999;
+}
+
+table.striped tbody tr:nth-child(even){
+  background:#EEE;
+}
+
+tr.border td{
+  border-top:1px solid #777;
+}
+
+td.currency{
+  text-align:right;
+  font-family:monospace;
+}
+
+.text-right{
+  text-align:right;
+}
