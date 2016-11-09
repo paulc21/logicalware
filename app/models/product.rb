@@ -7,9 +7,9 @@ class Product < ApplicationRecord
 
   before_validation :set_vat_rate, on: :create
 
-  def price(pos=1)
+  def price(others=1)
     unless self.discount.blank?
-      if pos%self.discount[:count] == 0
+      unless others%self.discount[:count] == 0
         return self[:price] + self.discount[:value]
       end
     end

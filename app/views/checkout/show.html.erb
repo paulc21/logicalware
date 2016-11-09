@@ -1,0 +1,48 @@
+<h1>Basket</h1>
+
+<% flash.each do |k,m| %>
+  <p><strong><%= k %></strong> -- <%= m %></p>
+<% end %>
+
+<%= form_tag scan_path do %>
+  <label>Product code</label>
+  <%= text_field_tag :product_code %>
+  <%= submit_tag "Add to basket" %>
+<% end %>
+
+<h2>Contents</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @basket.contents.any? %>
+      <% @basket.contents.each do |item| %>
+        <tr>
+          <td><%= item[:name] %></td>
+          <td><%= number_to_currency(item[:price],{ unit: "£" }) %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>Subtotal</td>
+        <td><%= number_to_currency(@basket.subtotal,{ unit: "£" }) %></td>
+      </tr>
+      <tr>
+        <td>VAT total</td>
+        <td><%= number_to_currency(@basket.vat_total,{ unit: "£" }) %></td>
+      </tr>
+      <tr>
+        <td>Grand Total</td>
+        <td><%= number_to_currency(@basket.grand_total,{ unit: "£" }) %></td>
+      </tr>
+    <% else %>
+      <tr>
+        <td colspan="2" style="text-align:center;"><em>Nothing in your basket</em></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

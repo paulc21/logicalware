@@ -7,10 +7,12 @@ class Basket < ApplicationRecord
   def scan(product)
     _items = self.contents
 
+    others = _items.select{|i| i[:code] == product.code }.count
+
     new_item = {
       code: product.code,
       name: product.name,
-      price: product.price,
+      price: product.price(others),
       vat_rate: VAT_RATES[product.vat_rate]
     }
 
